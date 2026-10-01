@@ -149,6 +149,31 @@
 
         .error-msg { color: #d32f2f; font-size: 13px; margin-top: 8px; font-weight: bold; display: none; text-align: left; }
 
+        /* Perfected Registration Row Alignment */
+        .register-form-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-field label {
+            font-size: 12px;
+            color: #0d47a1;
+            font-weight: bold;
+        }
+        .form-field input {
+            padding: 9px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            height: 38px;
+        }
+
         @media (max-width: 768px) {
             body { padding: 4px; }
             .welcome-card { border-radius: 8px; }
@@ -214,17 +239,20 @@
                 </div>
             </div>
 
-            <div style="background:#e3f2fd; padding:12px; border-radius:8px; margin-bottom:16px; border:1px solid #90caf9;">
-                <h4 style="color:#0d47a1; margin-bottom:8px; font-size:14px;">➕ Register New Student:</h4>
-                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                    <input type="text" id="newStudentName" placeholder="Student Name..." style="flex:2; min-width:160px; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:13px;">
+            <div style="background:#e3f2fd; padding:14px; border-radius:8px; margin-bottom:16px; border:1px solid #90caf9;">
+                <h4 style="color:#0d47a1; margin-bottom:10px; font-size:14px;">➕ Register New Student:</h4>
+                <div class="register-form-row">
+                    <div class="form-field" style="flex:2; min-width:200px;">
+                        <label for="newStudentName">Student Name:</label>
+                        <input type="text" id="newStudentName" placeholder="Enter Student Name...">
+                    </div>
                     
-                    <div style="flex:1; min-width:140px; display:flex; flex-direction:column;">
-                        <label style="font-size:11px; color:#0d47a1; font-weight:bold;">Expiry Date:</label>
-                        <input type="date" id="expiryDatePicker" style="padding:6px; border:1px solid #ccc; border-radius:4px; font-weight:bold; color:#0d47a1; background:white; font-size:13px;">
+                    <div class="form-field" style="flex:1; min-width:160px;">
+                        <label for="expiryDatePicker">Expiry Date:</label>
+                        <input type="date" id="expiryDatePicker" style="font-weight:bold; color:#0d47a1; background:white;">
                     </div>
 
-                    <button onclick="addNewStudent()" style="background:#2e7d32; color:white; border:none; padding:8px 14px; border-radius:4px; font-weight:bold; cursor:pointer; margin-top:auto; font-size:13px;">Generate Code</button>
+                    <button onclick="addNewStudent()" style="background:#2e7d32; color:white; border:none; padding:0 16px; height:38px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:13px; flex-shrink:0;">Generate Code</button>
                 </div>
             </div>
 
@@ -411,7 +439,7 @@
 
     let isTeacherUser = false;
 
-    // Advanced Preloader for Audio & Images to ensure smooth playback during Zoom classes
+    // Preloader for Audio & Images to ensure smooth playback during Zoom classes
     function startBackgroundPreloading() {
         const preloadContainer = document.getElementById('preloadContainer');
         const allImages = new Set();
@@ -441,14 +469,12 @@
             }
         });
 
-        // Preload Images
         allImages.forEach(imgSrc => {
             const img = new Image();
             img.src = imgSrc;
             preloadContainer.appendChild(img);
         });
 
-        // Preload Audio Files so Zoom playback is 100% smooth without buffering
         allAudios.forEach(audioSrc => {
             const aud = document.createElement('audio');
             aud.src = audioSrc;
@@ -1157,7 +1183,7 @@
     }
 
     function nextSectionConfirm() {
-        if (confirm("⚠ Section Completion Alert:\n\nOnce you move to the next section, you cannot return to this section to change any answers.\n\nAre you sure you want to proceed to the next section?")) {
+        if (confirm("⚠️ Section Completion Alert:\n\nOnce you move to the next section, you cannot return to this section to change any answers.\n\nAre you sure you want to proceed to the next section?")) {
             if (currentStep < examSteps.length - 1) loadStep(currentStep + 1);
         }
     }
@@ -1278,7 +1304,7 @@
         } else if (finalJftScore >= 170) {
             badgeBox.innerHTML = `
                 <div class="eval-status-box eval-mid">
-                    ⚠ MARGINAL / NEAR PASS (A1+ Level)<br>
+                    ⚠️ MARGINAL / NEAR PASS (A1+ Level)<br>
                     <span style="font-size:13px; font-weight:normal; color:#333;">Scale Grade: Intermediate Proficiency (170 - 199 Points)</span>
                 </div>
             `;
