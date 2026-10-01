@@ -10,15 +10,13 @@
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         
-        /* 🛡️ Student-specific Protection (Teacher will bypass via JS) */
-        body.student-protected {
-            user-select: none;
+        body.student-protected * {
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+            user-select: none;
         }
         
-        /* 🔠 फुरिगाना (Furigana) स्पष्ट र गाढा देखाउने CSS */
         rt {
             font-size: 11.5px !important;
             font-weight: bold !important;
@@ -79,10 +77,8 @@
         .exam-header-bar { display: flex; justify-content: space-between; align-items: center; background: #0d47a1; color: white; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; font-weight: bold; font-size: 14px; }
         .timer-box { background: #d32f2f; color: white; padding: 4px 10px; border-radius: 4px; font-size: 14px; }
 
-        /* 📱 COMPACT LAYOUT GRID */
         .exam-layout-grid { display: grid; grid-template-columns: 52px 1fr; gap: 10px; }
 
-        /* 🔍 SANO/COMPACT SIDEBAR PALETTE */
         .left-palette-sidebar { background: #f8f9fa; border: 1px solid #ddd; border-radius: 6px; padding: 4px 2px; height: fit-content; text-align: center; }
         .palette-label { font-size: 10px; font-weight: bold; color: #0d47a1; margin-bottom: 2px; display: block; border-bottom: 1px solid #ccc; padding-bottom: 1px; }
         
@@ -120,13 +116,11 @@
         .q-img-centered { max-width: 100%; height: auto; max-height: 320px; border-radius: 8px; margin: 0 auto 14px auto; display: block; border: 1px solid #ccc; box-shadow: 0 2px 8px rgba(0,0,0,0.06); object-fit: contain; }
         .dialogue-box-centered { background: #f4f8ff; border-left: 4px solid #1976d2; padding: 12px 14px; border-radius: 6px; margin: 0 auto 14px auto; font-size: 15px; line-height: 1.5; white-space: pre-line; text-align: center; max-width: 600px; }
 
-        /* 🔘 TEXT OPTIONS LAYOUT */
         .options-group-centered { display: flex; flex-direction: column; gap: 10px; max-width: 650px; margin: 0 auto; text-align: left; }
         .option-label { display: flex; align-items: center; gap: 12px; background: #f9f9f9; padding: 12px 16px; border: 1.5px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 14.5px; transition: all 0.15s ease; width: 100%; word-break: break-word; }
         .option-label:hover { background: #eef5fc; border-color: #90caf9; }
         .option-label input[type="radio"] { width: 18px; height: 18px; flex-shrink: 0; accent-color: #1976d2; cursor: pointer; }
 
-        /* 🖼️ IMAGE OPTIONS LAYOUT */
         .options-group-images { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; max-width: 650px; margin: 0 auto; justify-content: center; }
         .option-label-img { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #ffffff; padding: 6px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; width: 100%; position: relative; }
         .option-label-img:hover { border-color: #90caf9; background: #f4f8ff; }
@@ -144,8 +138,8 @@
         .student-table th { background: #1976d2; color: white; }
         .action-btn-del { background: #d32f2f; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .action-btn-reset { background: #ff9800; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 4px; font-size: 12px; }
+        .action-btn-unblock { background: #e65100; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 4px; font-size: 12px; font-weight: bold; }
         .action-btn-copy { background: #0288d1; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 4px; font-size: 12px; }
-        .action-btn-history { background: #7b1fa2; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
 
         #resultScreen { display: none; padding: 10px; text-align: left; }
         .scorecard-box { background: #ffffff; border: 2px solid #0d47a1; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
@@ -184,14 +178,12 @@
         }
     </style>
 </head>
-<body class="student-protected">
+<body>
 
-    <!-- 🔊 MEDIA PLAYER WITH PRELOAD -->
     <div style="width:1px; height:1px; overflow:hidden; position:absolute; opacity:0.01;">
         <video id="globalJftMedia" preload="auto" playsinline></video>
     </div>
 
-    <!-- 🌐 HIDDEN BACKGROUND PRELOAD CONTAINER -->
     <div id="preloadContainer" style="display:none;"></div>
 
     <div class="welcome-card">
@@ -201,7 +193,6 @@
             <div class="contact-info">📞 Contact / Viber / WhatsApp: <strong>9867222929</strong></div>
         </div>
 
-        <!-- 1. STUDENT LOGIN SCREEN -->
         <div class="card-body" id="loginScreen">
             <div class="instructions-title" style="margin-top:0;">Student Login (विद्यार्थी लगइन)</div>
             <p style="font-size: 13.5px; color: #555; margin-bottom: 16px;">Please enter your Full Name and Exam Access Code provided by Sensei.</p>
@@ -221,12 +212,11 @@
             <button class="start-btn" style="margin-top: 10px;" onclick="handleStudentLogin()">Login & Start Practice</button>
         </div>
 
-        <!-- 2. TEACHER CONTROL PANEL -->
         <div class="card-body" id="adminScreen">
             <div class="instructions-title" style="margin-top:0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                 <span>👨‍🏫 Teacher Control Panel</span>
                 <div style="display:flex; gap:8px;">
-                    <button onclick="startTeacherPracticeExam()" style="background:#0288d1; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:12px;">▶️ Start Exam as Teacher</button>
+                    <button onclick="startTeacherPracticeExam()" style="background:#0288d1; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:12px;">▶️️ Start Exam as Teacher</button>
                     <button onclick="logoutAdmin()" style="background:#d32f2f; color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:12px;">Logout</button>
                 </div>
             </div>
@@ -280,7 +270,6 @@
             </div>
         </div>
 
-        <!-- 3. LANDING SCREEN -->
         <div class="card-body" id="landingScreen">
             <div class="student-info">
                 <div class="info-item"><strong>Candidate Name:</strong> <span id="loggedInNameDisplay"></span></div>
@@ -296,6 +285,7 @@
                 <li><strong>Section 3:</strong> Listening Comprehension (Q28 - Q39) - Audio plays up to 2 times only.</li>
                 <li><strong>Section 4:</strong> Reading Comprehension (Q40 - Q53)</li>
                 <li><strong style="color:#d32f2f;">Daily Limit:</strong> You are allowed a maximum of <strong>3 attempts</strong> per day.</li>
+                <li><strong style="color:#d32f2f;">Security Notice:</strong> Screenshots allowed max 2 times. Screen Recording / Tab Switching will immediately block your exam for today!</li>
             </ul>
 
             <label class="agreement">
@@ -306,7 +296,6 @@
             <button id="startBtn" class="start-btn" disabled onclick="startExam()">Start Test Now</button>
         </div>
 
-        <!-- 4. EXAM SCREEN -->
         <div class="card-body" id="examScreen">
             <div class="exam-header-bar">
                 <div id="studentDisplay">User: </div>
@@ -358,7 +347,6 @@
             </div>
         </div>
 
-        <!-- 5. RESULT SCREEN -->
         <div class="card-body" id="resultScreen">
             <div class="scorecard-box">
                 <div class="score-header">
@@ -397,7 +385,6 @@
     </div>
 
 <script>
-    /* 🔑 FIREBASE CONFIGURATION */
     const firebaseConfig = {
         apiKey: "AIzaSyB9ANXbKemUW4O6guRCoGLDVmsuOLu28Cg",
         authDomain: "thapasenseijft.firebaseapp.com",
@@ -412,7 +399,11 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const db = firebase.database();
 
-    const TEACHER_ADMIN_PASS = "sensei1997"; 
+    const DB_STUDENTS = "students_jft";
+    const DB_REPORTS = "student_reports";
+    
+    // Encrypted Teacher Password (base64 of sensei1997)
+    const TEACHER_HASH = "c2Vuc2VpMTk5Nw=="; 
 
     function getDeviceId() {
         let deviceId = localStorage.getItem('thapa_jft_device_id');
@@ -435,35 +426,66 @@
         setTimeout(startBackgroundPreloading, 1000);
     };
 
-    /* 🛡️ SECURITY & SCREENSHOT ALERT LOGIC (Active for Students) */
     let isTeacherUser = false;
+    let screenshotAttempts = 0;
+    const MAX_ALLOWED_SCREENSHOTS = 2;
 
+    // 🛡️ ADVANCED SECURITY & SCREENSHOT PROTECTION
     document.addEventListener('contextmenu', function(e) {
-        if (!isTeacherUser) {
-            e.preventDefault();
-            alert("Warning: Right-click and saving images are strictly prohibited during the exam!");
-        }
+        if (!isTeacherUser) { e.preventDefault(); }
     });
 
     document.addEventListener('keydown', function(e) {
         if (!isTeacherUser) {
             if (e.key === 'F12' || 
                 (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
-                (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'p')) ||
-                e.key === 'PrintScreen') {
+                (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'p' || e.key === 'c'))) {
                 e.preventDefault();
-                alert("Warning: Screenshots and Screen Recording are strictly prohibited during the exam!");
             }
         }
     });
 
-    document.addEventListener('visibilitychange', function() {
-        if (!isTeacherUser && document.hidden) {
-            alert("Warning: Leaving the exam screen or attempting recording is prohibited!");
+    document.addEventListener('keyup', function(e) {
+        if (!isTeacherUser && document.getElementById('examScreen').style.display === 'block') {
+            if (e.key === 'PrintScreen' || 
+                (e.ctrlKey && e.key === 'p') || 
+                (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5'))) {
+                
+                screenshotAttempts++;
+                if (screenshotAttempts < MAX_ALLOWED_SCREENSHOTS) {
+                    alert(`⚠️ Screenshot Warning (Attempt ${screenshotAttempts}/${MAX_ALLOWED_SCREENSHOTS}):\n\nScreenshots are restricted. If you try to take a screenshot 1 more time, your exam set will be BLOCKED for today!`);
+                } else {
+                    blockStudentForToday("Screenshot Limit Exceeded (More than 2 times)");
+                }
+            }
         }
     });
 
-    /* 🚀 LAZY & BACKGROUND PRELOADING */
+    window.addEventListener('blur', function() {
+        if (!isTeacherUser && document.getElementById('examScreen').style.display === 'block') {
+            blockStudentForToday("Screen Recording / App Switching Detected");
+        }
+    });
+
+    function blockStudentForToday(reason) {
+        if (isTeacherUser) return;
+        
+        alert(`⛔ SECURITY VIOLATION BLOCKED!\n\nReason: ${reason}.\n\nYour exam is cancelled and BLOCKED for today! Please contact Thapa Sensei.`);
+        
+        if (loggedInStudentCode && loggedInStudentCode !== "TEACHER_ADMIN") {
+            const todayStr = new Date().toISOString().split('T')[0];
+            db.ref(`${DB_REPORTS}/${loggedInStudentCode}/blockedDates/${todayStr}`).set({
+                blocked: true,
+                reason: reason,
+                time: new Date().toLocaleTimeString()
+            });
+        }
+        
+        stopAudioPlayback();
+        clearInterval(timerInterval);
+        location.reload();
+    }
+
     function startBackgroundPreloading() {
         const preloadContainer = document.getElementById('preloadContainer');
         const allImages = new Set();
@@ -500,7 +522,7 @@
 
     function openAdminPanelWithPrompt() {
         const pass = prompt("👨‍🏫 Enter Teacher Control Panel Password:");
-        if (pass === TEACHER_ADMIN_PASS) {
+        if (btoa(pass) === TEACHER_HASH) {
             isTeacherUser = true;
             document.body.classList.remove('student-protected');
             document.getElementById('loginScreen').style.display = 'none';
@@ -539,7 +561,7 @@
         const selectedDate = new Date(expiryDateVal + "T23:59:59");
         const expiryTimestamp = selectedDate.getTime();
 
-        db.ref('students_jft/' + code).set({
+        db.ref(DB_STUDENTS + '/' + code).set({
             name: name, 
             code: code, 
             boundDeviceId: null,
@@ -557,13 +579,22 @@
         const textToCopy = `Thapa Sensei JFT Class\nStudent Name: ${name}\nAccess Code: ${code}`;
         navigator.clipboard.writeText(textToCopy).then(() => {
             alert(`📋 Copied details for ${name} (${code})!`);
-        }).catch(err => {
-            alert("Failed to copy details.");
         });
     }
 
+    function unblockStudentDirectly(code) {
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (confirm(`Do you want to UNBLOCK student code (${code}) for today?`)) {
+            db.ref(`${DB_REPORTS}/${code}/blockedDates/${todayStr}`).remove().then(() => {
+                alert(`✅ Student (${code}) successfully UNBLOCKED!`);
+                loadAdminStudentTable();
+                loadAdminReportsTable();
+            });
+        }
+    }
+
     function loadAdminStudentTable() {
-        db.ref('students_jft').on('value', (snapshot) => {
+        db.ref(DB_STUDENTS).on('value', (snapshot) => {
             const tbody = document.getElementById('studentTableBody');
             tbody.innerHTML = "";
             const students = snapshot.val();
@@ -573,40 +604,55 @@
             }
 
             const now = Date.now();
+            const todayStr = new Date().toISOString().split('T')[0];
 
-            Object.keys(students).forEach(code => {
-                const stu = students[code];
-                const expDateStr = stu.expiryTimestamp ? new Date(stu.expiryTimestamp).toLocaleDateString() : "No Expiry";
-                const isExpired = stu.expiryTimestamp && (now > stu.expiryTimestamp);
+            db.ref(DB_REPORTS).once('value').then((repSnap) => {
+                const reports = repSnap.val() || {};
 
-                let statusText = "";
-                if (isExpired) {
-                    statusText = `<span style="color:#d32f2f; font-weight:bold;">⛔ Expired</span>`;
-                } else if (stu.boundDeviceId) {
-                    statusText = `<span style="color:#2e7d32; font-weight:bold;">🔒 Active (${stu.boundDeviceId.substring(0,6)}...)</span>`;
-                } else {
-                    statusText = `<span style="color:#ff9800; font-weight:bold;">🔓 Unused</span>`;
-                }
+                Object.keys(students).forEach(code => {
+                    const stu = students[code];
+                    const expDateStr = stu.expiryTimestamp ? new Date(stu.expiryTimestamp).toLocaleDateString() : "No Expiry";
+                    const isExpired = stu.expiryTimestamp && (now > stu.expiryTimestamp);
+                    
+                    let isBlockedToday = false;
+                    if (reports[code] && reports[code].blockedDates && reports[code].blockedDates[todayStr] && reports[code].blockedDates[todayStr].blocked) {
+                        isBlockedToday = true;
+                    }
 
-                tbody.innerHTML += `
-                    <tr style="${isExpired ? 'background:#ffebee;' : ''}">
-                        <td><strong>${stu.name}</strong></td>
-                        <td><code style="background:#eee; padding:2px 5px; color:#0d47a1; font-weight:bold;">${stu.code}</code></td>
-                        <td><small>${expDateStr}</small></td>
-                        <td>${statusText}</td>
-                        <td>
-                            <button class="action-btn-copy" onclick="copyStudentDetails('${stu.name}', '${stu.code}')">Copy Details</button>
-                            <button class="action-btn-reset" onclick="resetStudentDevice('${stu.code}')">Reset</button>
-                            <button class="action-btn-del" onclick="deleteStudent('${stu.code}')">Del</button>
-                        </td>
-                    </tr>
-                `;
+                    let statusText = "";
+                    if (isBlockedToday) {
+                        statusText = `<span style="color:#d32f2f; font-weight:bold;">⛔ Blocked Today</span>`;
+                    } else if (isExpired) {
+                        statusText = `<span style="color:#d32f2f; font-weight:bold;">⛔ Expired</span>`;
+                    } else if (stu.boundDeviceId) {
+                        statusText = `<span style="color:#2e7d32; font-weight:bold;">🔒 Active</span>`;
+                    } else {
+                        statusText = `<span style="color:#ff9800; font-weight:bold;">🔓 Unused</span>`;
+                    }
+
+                    let unblockBtnHtml = isBlockedToday ? `<button class="action-btn-unblock" onclick="unblockStudentDirectly('${stu.code}')">🔓 Unblock</button>` : '';
+
+                    tbody.innerHTML += `
+                        <tr style="${isBlockedToday ? 'background:#ffebee;' : (isExpired ? 'background:#fff3e0;' : '')}">
+                            <td><strong>${stu.name}</strong></td>
+                            <td><code style="background:#eee; padding:2px 5px; color:#0d47a1; font-weight:bold;">${stu.code}</code></td>
+                            <td><small>${expDateStr}</small></td>
+                            <td>${statusText}</td>
+                            <td>
+                                ${unblockBtnHtml}
+                                <button class="action-btn-copy" onclick="copyStudentDetails('${stu.name}', '${stu.code}')">Copy Details</button>
+                                <button class="action-btn-reset" onclick="resetStudentDevice('${stu.code}')">Reset</button>
+                                <button class="action-btn-del" onclick="deleteStudent('${stu.code}')">Del</button>
+                            </td>
+                        </tr>
+                    `;
+                });
             });
         });
     }
 
     function loadAdminReportsTable() {
-        db.ref('student_reports').on('value', (snapshot) => {
+        db.ref(DB_REPORTS).on('value', (snapshot) => {
             const tbody = document.getElementById('studentReportTableBody');
             tbody.innerHTML = "";
             const reports = snapshot.val();
@@ -620,8 +666,8 @@
             Object.keys(reports).forEach(code => {
                 let rep = reports[code];
                 let todayAttemptCount = (rep.attempts && rep.attempts[todayStr]) ? rep.attempts[todayStr] : 0;
+                let isBlockedToday = (rep.blockedDates && rep.blockedDates[todayStr] && rep.blockedDates[todayStr].blocked);
                 
-                // Format all attempts history list
                 let historyHtml = "<ul style='margin:0; padding-left:15px; font-size:12px;'>";
                 if (rep.history && Array.isArray(rep.history)) {
                     rep.history.forEach((h, idx) => {
@@ -632,12 +678,16 @@
                 }
                 historyHtml += "</ul>";
 
+                let attemptBadge = isBlockedToday ? 
+                    `<button class="action-btn-unblock" onclick="unblockStudentDirectly('${code}')">⛔ Blocked (Unblock)</button>` : 
+                    `<span style="background:#e3f2fd; padding:2px 6px; border-radius:4px; font-weight:bold;">${todayAttemptCount} / 3</span>`;
+
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${rep.name || 'Unknown'}</strong></td>
                         <td><code>${code}</code></td>
                         <td><strong style="color:#0d47a1;">${rep.lastScore || 0} / 250</strong></td>
-                        <td><span style="background:#e3f2fd; padding:2px 6px; border-radius:4px; font-weight:bold;">${todayAttemptCount} / 3</span></td>
+                        <td>${attemptBadge}</td>
                         <td>${historyHtml}</td>
                     </tr>
                 `;
@@ -647,14 +697,16 @@
 
     function resetStudentDevice(code) {
         if (confirm(`Do you want to reset device lock for Access Code (${code})?`)) {
-            db.ref('students_jft/' + code + '/boundDeviceId').set(null);
+            db.ref(DB_STUDENTS + '/' + code + '/boundDeviceId').set(null);
+            const todayStr = new Date().toISOString().split('T')[0];
+            db.ref(`${DB_REPORTS}/${code}/blockedDates/${todayStr}`).remove();
         }
     }
 
     function deleteStudent(code) {
         if (confirm(`Are you sure you want to delete this student?`)) {
-            db.ref('students_jft/' + code).remove();
-            db.ref('student_reports/' + code).remove();
+            db.ref(DB_STUDENTS + '/' + code).remove();
+            db.ref(DB_REPORTS + '/' + code).remove();
         }
     }
 
@@ -678,7 +730,7 @@
             return;
         }
 
-        db.ref('students_jft/' + codeInput).once('value').then((snapshot) => {
+        db.ref(DB_STUDENTS + '/' + codeInput).once('value').then((snapshot) => {
             if (!snapshot.exists()) {
                 errorBox.style.display = 'block';
                 errorBox.innerHTML = "❌ Invalid Access Code! Please check with Sensei.";
@@ -703,31 +755,40 @@
             const currentDeviceId = getDeviceId();
 
             if (!student.boundDeviceId) {
-                db.ref('students_jft/' + codeInput + '/boundDeviceId').set(currentDeviceId);
+                db.ref(DB_STUDENTS + '/' + codeInput + '/boundDeviceId').set(currentDeviceId);
             } else if (student.boundDeviceId !== currentDeviceId) {
                 errorBox.style.display = 'block';
                 errorBox.innerHTML = `🚫 **Security Warning:** This Access Code is registered on another device.`;
                 return;
             }
 
-            // 🕒 CHECK DAILY ATTEMPT LIMIT (Max 3 times per day)
             const todayStr = new Date().toISOString().split('T')[0];
-            db.ref(`student_reports/${codeInput}/attempts/${todayStr}`).once('value').then((attemptSnap) => {
-                let currentCount = attemptSnap.val() || 0;
-                if (currentCount >= 3 && codeInput !== "TEACHER_ADMIN") {
+
+            db.ref(`${DB_REPORTS}/${codeInput}/blockedDates/${todayStr}`).once('value').then((blockSnap) => {
+                if (blockSnap.exists() && blockSnap.val().blocked === true && codeInput !== "TEACHER_ADMIN") {
                     errorBox.style.display = 'block';
-                    errorBox.innerHTML = `⛔ **Daily Limit Reached:** You have already attempted the exam 3 times today. Please try again tomorrow!`;
+                    errorBox.innerHTML = `⛔ **EXAM SET BLOCKED FOR TODAY:** You were blocked for attempting Screenshots / Screen Recording. Please contact Thapa Sensei!`;
                     return;
                 }
 
-                errorBox.style.display = 'none';
-                isTeacherUser = false;
-                document.body.classList.add('student-protected');
-                loggedInStudentName = student.name;
-                loggedInStudentCode = codeInput;
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('landingScreen').style.display = 'block';
-                document.getElementById('loggedInNameDisplay').innerText = loggedInStudentName;
+                db.ref(`${DB_REPORTS}/${codeInput}/attempts/${todayStr}`).once('value').then((attemptSnap) => {
+                    let currentCount = attemptSnap.val() || 0;
+                    if (currentCount >= 3 && codeInput !== "TEACHER_ADMIN") {
+                        errorBox.style.display = 'block';
+                        errorBox.innerHTML = `⛔ **Daily Limit Reached:** You have already attempted the exam 3 times today. Please try again tomorrow!`;
+                        return;
+                    }
+
+                    errorBox.style.display = 'none';
+                    isTeacherUser = false;
+                    screenshotAttempts = 0;
+                    document.body.classList.add('student-protected');
+                    loggedInStudentName = student.name;
+                    loggedInStudentCode = codeInput;
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('landingScreen').style.display = 'block';
+                    document.getElementById('loggedInNameDisplay').innerText = loggedInStudentName;
+                });
             });
         });
     }
@@ -737,9 +798,8 @@
         document.getElementById('startBtn').disabled = !check;
     }
 
-    /* 📝 EXAM STEPS (53 Questions total) */
+    /* Original 53 Questions Array */
     const examSteps = [
-        /* ================= SECTION 1: Script & Vocabulary (Q1 - Q15) ================= */
         { sectionId: 1, sectionName: "Section 1: Script & Vocabulary", type: "single", qIdx: 0, img: "q1.jpeg", qText: "仕事の ときは、ヘルメットを ＿＿＿。", options: ["はいて います", "かぶって います", "つけて います", "きて います"], answer: 1 },
         { sectionId: 1, sectionName: "Section 1: Script & Vocabulary", type: "single", qIdx: 1, img: "q2.jpeg", options: ["あらいます", "たたみます", "ほします", "すてます"], answer: 2 },
         { sectionId: 1, sectionName: "Section 1: Script & Vocabulary", type: "single", qIdx: 2, img: "q3.jpeg", options: ["つよい", "おもい", "あツイ", "はやい"], answer: 0 },
@@ -756,7 +816,6 @@
         { sectionId: 1, sectionName: "Section 1: Script & Vocabulary", type: "single", qIdx: 13, img: null, dialogueText: "店員：この Tシャツは いかがですか。\n客：うーん、ちょっと 大きい ですね。もう ＿＿＿ 小さいのは ありますか。", options: ["たくさん", "すこし", "ぜんぶ", "だいたい"], answer: 1 },
         { sectionId: 1, sectionName: "Section 1: Script & Vocabulary", type: "single", qIdx: 14, img: null, qText: "すみません、この 資料を 5枚 ________ください。", options: ["そうじして", "おくって", "かえして", "コピーして"], answer: 3 },
 
-        /* ================= SECTION 2: Conversation & Expression (Q16 - Q27) ================= */
         { sectionId: 2, sectionName: "Section 2: Conversation & Expression", type: "single", qIdx: 15, img: "c1.jpeg", options: ["手伝いましょう", "手伝ってください", "手伝うでしょう", "手伝います"], answer: 0 },
         { sectionId: 2, sectionName: "Section 2: Conversation & Expression", type: "single", qIdx: 16, img: "c2.jpeg", options: ["押したいです", "押してください", "押してもいいです", "押すことができます"], answer: 1 },
         { sectionId: 2, sectionName: "Section 2: Conversation & Expression", type: "single", qIdx: 17, img: "c3.jpeg", options: ["ありますから、行けません", "ありましたから、行きません", "あるので、行きたいです", "ありますから、行きます"], answer: 0 },
@@ -770,7 +829,6 @@
         { sectionId: 2, sectionName: "Section 2: Conversation & Expression", type: "single", qIdx: 25, img: "c11.jpeg", qText: "荷物を 運んでいる <ruby>同僚<rt>どうりょう</rt></ruby>に 何と 言いますか。", options: ["お先に 失礼します。", "手伝いましょうか。", "ごちそうさまでした。", "おかげさまで。"], answer: 1 },
         { sectionId: 2, sectionName: "Section 2: Conversation & Expression", type: "single", qIdx: 26, img: "c12.jpeg", options: ["曲がってください", "渡ってください", "止まってください", "乗ってください"], answer: 0 },
 
-        /* ================= SECTION 3: Listening Comprehension (Q28 - Q39) ================= */
         {
             sectionId: 3, sectionName: "Section 3: Listening Comprehension", type: "listening", audioSrc: "a1_2.mp3", 
             subQuestions: [
@@ -824,7 +882,6 @@
             ]
         },
 
-        /* ================= SECTION 4: Reading Comprehension (Q40 - Q53) ================= */
         {
             sectionId: 4, sectionName: "Section 4: Reading Comprehension", type: "reading_group", img: "r1.jpeg",
             subQuestions: [
@@ -913,11 +970,11 @@
     function startExam() {
         if (loggedInStudentCode && loggedInStudentCode !== "TEACHER_ADMIN") {
             const todayStr = new Date().toISOString().split('T')[0];
-            const attemptRef = db.ref(`student_reports/${loggedInStudentCode}/attempts/${todayStr}`);
+            const attemptRef = db.ref(`${DB_REPORTS}/${loggedInStudentCode}/attempts/${todayStr}`);
             attemptRef.transaction((currentCount) => {
                 return (currentCount || 0) + 1;
             });
-            db.ref(`student_reports/${loggedInStudentCode}/name`).set(loggedInStudentName);
+            db.ref(`${DB_REPORTS}/${loggedInStudentCode}/name`).set(loggedInStudentName);
         }
 
         document.getElementById('landingScreen').style.display = 'none';
@@ -1275,12 +1332,11 @@
         let finalJftScore = Math.round(10 + (grandCorrect / 53) * 240); 
 
         if (loggedInStudentCode && loggedInStudentCode !== "TEACHER_ADMIN") {
-            const reportRef = db.ref(`student_reports/${loggedInStudentCode}`);
+            const reportRef = db.ref(`${DB_REPORTS}/${loggedInStudentCode}`);
             reportRef.once('value').then((snap) => {
                 let data = snap.val() || {};
                 let history = data.history || [];
                 
-                // Add new attempt to history array
                 history.push({
                     score: finalJftScore,
                     date: new Date().toLocaleString()
