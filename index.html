@@ -106,7 +106,11 @@
         .q-container { background: white; border: 1px solid #e0e0e0; padding: 16px; border-radius: 8px; margin-bottom: 14px; text-align: center; }
         .q-header-title { font-size: 14.5px; font-weight: 800; color: #0d47a1; text-align: left; margin-bottom: 12px; padding-bottom: 4px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
         .q-text-centered { font-size: 16px; font-weight: bold; color: #222; margin-bottom: 12px; text-align: center; line-height: 1.5; word-break: break-word; }
-        .q-img-centered { max-width: 100%; height: auto; max-height: 320px; border-radius: 8px; margin: 0 auto 14px auto; display: block; border: 1px solid #ccc; box-shadow: 0 2px 8px rgba(0,0,0,0.06); object-fit: contain; }
+        
+        /* Optimized Mobile Image Responsiveness */
+        .q-img-centered { width: 100%; max-width: 550px; height: auto; max-height: 320px; border-radius: 8px; margin: 0 auto 14px auto; display: block; object-fit: contain; }
+        .q-img-centered[src=""], .q-img-centered:not([src]) { display: none !important; }
+
         .dialogue-box-centered { background: #f4f8ff; border-left: 4px solid #1976d2; padding: 12px 14px; border-radius: 6px; margin: 0 auto 14px auto; font-size: 15px; line-height: 1.5; white-space: pre-line; text-align: center; max-width: 600px; }
 
         .options-group-centered { display: flex; flex-direction: column; gap: 10px; max-width: 650px; margin: 0 auto; text-align: left; }
@@ -149,7 +153,6 @@
 
         .error-msg { color: #d32f2f; font-size: 13px; margin-top: 8px; font-weight: bold; display: none; text-align: left; }
 
-        /* Perfected Registration Row Alignment */
         .register-form-row {
             display: flex;
             gap: 12px;
@@ -439,7 +442,7 @@
 
     let isTeacherUser = false;
 
-    // Preloader for Audio & Images to ensure smooth playback during Zoom classes
+    // Preloader for Audio & Images
     function startBackgroundPreloading() {
         const preloadContainer = document.getElementById('preloadContainer');
         const allImages = new Set();
@@ -1011,7 +1014,7 @@
                     <div class="q-header-title"><span>Question ${step.qIdx + 1}</span></div>
                     ${step.qText ? `<div class="q-text-centered">${step.qText}</div>` : ''}
                     ${step.dialogueText ? `<div class="dialogue-box-centered">${step.dialogueText}</div>` : ''}
-                    ${step.img ? `<img src="${step.img}" class="q-img-centered" loading="lazy" onerror="this.style.display='none'">` : ''}
+                    ${step.img ? `<img src="${step.img}" class="q-img-centered" loading="lazy" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">` : ''}
                     
                     ${renderOptionsHTML(step.options, step.qIdx)}
                 </div>
@@ -1035,7 +1038,7 @@
                     <div class="q-container">
                         <div class="q-header-title"><span>Question ${sub.qIdx + 1}</span></div>
                         ${sub.qText ? `<div class="q-text-centered">${sub.qText}</div>` : ''}
-                        ${sub.img ? `<img src="${sub.img}" class="q-img-centered" loading="lazy" onerror="this.style.display='none'">` : ''}
+                        ${sub.img ? `<img src="${sub.img}" class="q-img-centered" loading="lazy" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">` : ''}
                         
                         ${renderOptionsHTML(sub.options, sub.qIdx)}
                     </div>
@@ -1044,14 +1047,14 @@
             qContainer.innerHTML = htmlContent;
         } else if (step.type === 'reading_group') {
             audioContainer.style.display = 'none';
-            let htmlContent = step.img ? `<img src="${step.img}" class="q-img-centered" loading="lazy" style="max-height:320px;" onerror="this.style.display='none'">` : "";
+            let htmlContent = step.img ? `<img src="${step.img}" class="q-img-centered" loading="lazy" style="max-height:320px;" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">` : "";
             
             step.subQuestions.forEach(sub => {
                 htmlContent += `
                     <div class="q-container">
                         <div class="q-header-title"><span>Question ${sub.qIdx + 1}</span></div>
                         ${sub.qText ? `<div class="q-text-centered">${sub.qText}</div>` : ''}
-                        ${sub.img ? `<img src="${sub.img}" class="q-img-centered" loading="lazy" onerror="this.style.display='none'">` : ''}
+                        ${sub.img ? `<img src="${sub.img}" class="q-img-centered" loading="lazy" onerror="this.onerror=null; this.removeAttribute('src'); this.style.display='none';">` : ''}
                         
                         ${renderOptionsHTML(sub.options, sub.qIdx)}
                     </div>
