@@ -10,13 +10,6 @@
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         
-        body.student-protected * {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-        
         rt {
             font-size: 11.5px !important;
             font-weight: bold !important;
@@ -181,7 +174,7 @@
 <body>
 
     <div style="width:1px; height:1px; overflow:hidden; position:absolute; opacity:0.01;">
-        <video id="globalJftMedia" preload="auto" playsinline></video>
+        <audio id="globalJftMedia" preload="auto" playsinline></audio>
     </div>
 
     <div id="preloadContainer" style="display:none;"></div>
@@ -216,7 +209,7 @@
             <div class="instructions-title" style="margin-top:0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                 <span>👨‍🏫 Teacher Control Panel</span>
                 <div style="display:flex; gap:8px;">
-                    <button onclick="startTeacherPracticeExam()" style="background:#0288d1; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:12px;">▶️️ Start Exam as Teacher</button>
+                    <button onclick="startTeacherPracticeExam()" style="background:#0288d1; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:12px;">▶ Start Exam as Teacher</button>
                     <button onclick="logoutAdmin()" style="background:#d32f2f; color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:12px;">Logout</button>
                 </div>
             </div>
@@ -284,8 +277,7 @@
                 <li><strong>Section 2:</strong> Conversation & Expression (Q16 - Q27)</li>
                 <li><strong>Section 3:</strong> Listening Comprehension (Q28 - Q39) - Audio plays up to 2 times only.</li>
                 <li><strong>Section 4:</strong> Reading Comprehension (Q40 - Q53)</li>
-                <li><strong style="color:#d32f2f;">Daily Limit:</strong> You are allowed a maximum of <strong>3 attempts</strong> per day.</li>
-                <li><strong style="color:#d32f2f;">Security Notice:</strong> Screenshots allowed max 2 times. Screen Recording / Tab Switching will immediately block your exam for today!</li>
+                <li><strong style="color:#2e7d32;">Daily Limit:</strong> You are allowed a maximum of <strong>5 attempts</strong> per day.</li>
             </ul>
 
             <label class="agreement">
@@ -385,6 +377,7 @@
     </div>
 
 <script>
+    // Official Original Firebase Config
     const firebaseConfig = {
         apiKey: "AIzaSyB9ANXbKemUW4O6guRCoGLDVmsuOLu28Cg",
         authDomain: "thapasenseijft.firebaseapp.com",
@@ -402,17 +395,7 @@
     const DB_STUDENTS = "students_jft";
     const DB_REPORTS = "student_reports";
     
-    // Encrypted Teacher Password (base64 of sensei1997)
     const TEACHER_HASH = "c2Vuc2VpMTk5Nw=="; 
-
-    function getDeviceId() {
-        let deviceId = localStorage.getItem('thapa_jft_device_id');
-        if (!deviceId) {
-            deviceId = 'DEV-' + Math.random().toString(36).substring(2, 9) + Date.now();
-            localStorage.setItem('thapa_jft_device_id', deviceId);
-        }
-        return deviceId;
-    }
 
     window.onload = function() {
         const defaultDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -423,74 +406,19 @@
             openAdminPanelWithPrompt();
         }
         
-        setTimeout(startBackgroundPreloading, 1000);
+        setTimeout(startBackgroundPreloading, 500);
     };
 
     let isTeacherUser = false;
-    let screenshotAttempts = 0;
-    const MAX_ALLOWED_SCREENSHOTS = 2;
 
-    // 🛡️ ADVANCED SECURITY & SCREENSHOT PROTECTION
-    document.addEventListener('contextmenu', function(e) {
-        if (!isTeacherUser) { e.preventDefault(); }
-    });
-
-    document.addEventListener('keydown', function(e) {
-        if (!isTeacherUser) {
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
-                (e.ctrlKey && (e.key === 'u' || e.key === 's' || e.key === 'p' || e.key === 'c'))) {
-                e.preventDefault();
-            }
-        }
-    });
-
-    document.addEventListener('keyup', function(e) {
-        if (!isTeacherUser && document.getElementById('examScreen').style.display === 'block') {
-            if (e.key === 'PrintScreen' || 
-                (e.ctrlKey && e.key === 'p') || 
-                (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5'))) {
-                
-                screenshotAttempts++;
-                if (screenshotAttempts < MAX_ALLOWED_SCREENSHOTS) {
-                    alert(`⚠️ Screenshot Warning (Attempt ${screenshotAttempts}/${MAX_ALLOWED_SCREENSHOTS}):\n\nScreenshots are restricted. If you try to take a screenshot 1 more time, your exam set will be BLOCKED for today!`);
-                } else {
-                    blockStudentForToday("Screenshot Limit Exceeded (More than 2 times)");
-                }
-            }
-        }
-    });
-
-    window.addEventListener('blur', function() {
-        if (!isTeacherUser && document.getElementById('examScreen').style.display === 'block') {
-            blockStudentForToday("Screen Recording / App Switching Detected");
-        }
-    });
-
-    function blockStudentForToday(reason) {
-        if (isTeacherUser) return;
-        
-        alert(`⛔ SECURITY VIOLATION BLOCKED!\n\nReason: ${reason}.\n\nYour exam is cancelled and BLOCKED for today! Please contact Thapa Sensei.`);
-        
-        if (loggedInStudentCode && loggedInStudentCode !== "TEACHER_ADMIN") {
-            const todayStr = new Date().toISOString().split('T')[0];
-            db.ref(`${DB_REPORTS}/${loggedInStudentCode}/blockedDates/${todayStr}`).set({
-                blocked: true,
-                reason: reason,
-                time: new Date().toLocaleTimeString()
-            });
-        }
-        
-        stopAudioPlayback();
-        clearInterval(timerInterval);
-        location.reload();
-    }
-
+    // Advanced Preloader for Audio & Images to ensure smooth playback during Zoom classes
     function startBackgroundPreloading() {
         const preloadContainer = document.getElementById('preloadContainer');
         const allImages = new Set();
+        const allAudios = new Set();
         
         examSteps.forEach(st => {
+            if (st.audioSrc) allAudios.add(st.audioSrc);
             if (st.img) allImages.add(st.img);
             if (st.options) {
                 st.options.forEach(opt => {
@@ -513,10 +441,19 @@
             }
         });
 
+        // Preload Images
         allImages.forEach(imgSrc => {
             const img = new Image();
             img.src = imgSrc;
             preloadContainer.appendChild(img);
+        });
+
+        // Preload Audio Files so Zoom playback is 100% smooth without buffering
+        allAudios.forEach(audioSrc => {
+            const aud = document.createElement('audio');
+            aud.src = audioSrc;
+            aud.preload = "auto";
+            preloadContainer.appendChild(aud);
         });
     }
 
@@ -524,7 +461,6 @@
         const pass = prompt("👨‍🏫 Enter Teacher Control Panel Password:");
         if (btoa(pass) === TEACHER_HASH) {
             isTeacherUser = true;
-            document.body.classList.remove('student-protected');
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('adminScreen').style.display = 'block';
             loadAdminStudentTable();
@@ -537,7 +473,6 @@
 
     function startTeacherPracticeExam() {
         isTeacherUser = true;
-        document.body.classList.remove('student-protected');
         loggedInStudentName = "Thapa Sensei (Teacher)";
         loggedInStudentCode = "TEACHER_ADMIN";
         document.getElementById('adminScreen').style.display = 'none';
@@ -564,7 +499,6 @@
         db.ref(DB_STUDENTS + '/' + code).set({
             name: name, 
             code: code, 
-            boundDeviceId: null,
             expiryTimestamp: expiryTimestamp,
             createdDate: new Date().toLocaleDateString()
         }, (error) => {
@@ -624,10 +558,8 @@
                         statusText = `<span style="color:#d32f2f; font-weight:bold;">⛔ Blocked Today</span>`;
                     } else if (isExpired) {
                         statusText = `<span style="color:#d32f2f; font-weight:bold;">⛔ Expired</span>`;
-                    } else if (stu.boundDeviceId) {
-                        statusText = `<span style="color:#2e7d32; font-weight:bold;">🔒 Active</span>`;
                     } else {
-                        statusText = `<span style="color:#ff9800; font-weight:bold;">🔓 Unused</span>`;
+                        statusText = `<span style="color:#2e7d32; font-weight:bold;">🔒 Active</span>`;
                     }
 
                     let unblockBtnHtml = isBlockedToday ? `<button class="action-btn-unblock" onclick="unblockStudentDirectly('${stu.code}')">🔓 Unblock</button>` : '';
@@ -641,7 +573,6 @@
                             <td>
                                 ${unblockBtnHtml}
                                 <button class="action-btn-copy" onclick="copyStudentDetails('${stu.name}', '${stu.code}')">Copy Details</button>
-                                <button class="action-btn-reset" onclick="resetStudentDevice('${stu.code}')">Reset</button>
                                 <button class="action-btn-del" onclick="deleteStudent('${stu.code}')">Del</button>
                             </td>
                         </tr>
@@ -680,7 +611,7 @@
 
                 let attemptBadge = isBlockedToday ? 
                     `<button class="action-btn-unblock" onclick="unblockStudentDirectly('${code}')">⛔ Blocked (Unblock)</button>` : 
-                    `<span style="background:#e3f2fd; padding:2px 6px; border-radius:4px; font-weight:bold;">${todayAttemptCount} / 3</span>`;
+                    `<span style="background:#e3f2fd; padding:2px 6px; border-radius:4px; font-weight:bold;">${todayAttemptCount} / 5</span>`;
 
                 tbody.innerHTML += `
                     <tr>
@@ -693,14 +624,6 @@
                 `;
             });
         });
-    }
-
-    function resetStudentDevice(code) {
-        if (confirm(`Do you want to reset device lock for Access Code (${code})?`)) {
-            db.ref(DB_STUDENTS + '/' + code + '/boundDeviceId').set(null);
-            const todayStr = new Date().toISOString().split('T')[0];
-            db.ref(`${DB_REPORTS}/${code}/blockedDates/${todayStr}`).remove();
-        }
     }
 
     function deleteStudent(code) {
@@ -752,37 +675,25 @@
                 return;
             }
 
-            const currentDeviceId = getDeviceId();
-
-            if (!student.boundDeviceId) {
-                db.ref(DB_STUDENTS + '/' + codeInput + '/boundDeviceId').set(currentDeviceId);
-            } else if (student.boundDeviceId !== currentDeviceId) {
-                errorBox.style.display = 'block';
-                errorBox.innerHTML = `🚫 **Security Warning:** This Access Code is registered on another device.`;
-                return;
-            }
-
             const todayStr = new Date().toISOString().split('T')[0];
 
             db.ref(`${DB_REPORTS}/${codeInput}/blockedDates/${todayStr}`).once('value').then((blockSnap) => {
                 if (blockSnap.exists() && blockSnap.val().blocked === true && codeInput !== "TEACHER_ADMIN") {
                     errorBox.style.display = 'block';
-                    errorBox.innerHTML = `⛔ **EXAM SET BLOCKED FOR TODAY:** You were blocked for attempting Screenshots / Screen Recording. Please contact Thapa Sensei!`;
+                    errorBox.innerHTML = `⛔ **EXAM SET BLOCKED FOR TODAY:** Please contact Thapa Sensei!`;
                     return;
                 }
 
                 db.ref(`${DB_REPORTS}/${codeInput}/attempts/${todayStr}`).once('value').then((attemptSnap) => {
                     let currentCount = attemptSnap.val() || 0;
-                    if (currentCount >= 3 && codeInput !== "TEACHER_ADMIN") {
+                    if (currentCount >= 5 && codeInput !== "TEACHER_ADMIN") {
                         errorBox.style.display = 'block';
-                        errorBox.innerHTML = `⛔ **Daily Limit Reached:** You have already attempted the exam 3 times today. Please try again tomorrow!`;
+                        errorBox.innerHTML = `⛔ **Daily Limit Reached:** You have already attempted the exam 5 times today. Please try again tomorrow!`;
                         return;
                     }
 
                     errorBox.style.display = 'none';
                     isTeacherUser = false;
-                    screenshotAttempts = 0;
-                    document.body.classList.add('student-protected');
                     loggedInStudentName = student.name;
                     loggedInStudentCode = codeInput;
                     document.getElementById('loginScreen').style.display = 'none';
@@ -798,7 +709,6 @@
         document.getElementById('startBtn').disabled = !check;
     }
 
-    /* Original 53 Questions Array */
     const examSteps = [
         { sectionId: 1, sectionName: "Section 1: Script & Vocabulary", type: "single", qIdx: 0, img: "q1.jpeg", qText: "仕事の ときは、ヘルメットを ＿＿＿。", options: ["はいて います", "かぶって います", "つけて います", "きて います"], answer: 1 },
         { sectionId: 1, sectionName: "Section 1: Script & Vocabulary", type: "single", qIdx: 1, img: "q2.jpeg", options: ["あらいます", "たたみます", "ほします", "すてます"], answer: 2 },
@@ -1247,7 +1157,7 @@
     }
 
     function nextSectionConfirm() {
-        if (confirm("⚠️ Section Completion Alert:\n\nOnce you move to the next section, you cannot return to this section to change any answers.\n\nAre you sure you want to proceed to the next section?")) {
+        if (confirm("⚠ Section Completion Alert:\n\nOnce you move to the next section, you cannot return to this section to change any answers.\n\nAre you sure you want to proceed to the next section?")) {
             if (currentStep < examSteps.length - 1) loadStep(currentStep + 1);
         }
     }
@@ -1368,7 +1278,7 @@
         } else if (finalJftScore >= 170) {
             badgeBox.innerHTML = `
                 <div class="eval-status-box eval-mid">
-                    ⚠️ MARGINAL / NEAR PASS (A1+ Level)<br>
+                    ⚠ MARGINAL / NEAR PASS (A1+ Level)<br>
                     <span style="font-size:13px; font-weight:normal; color:#333;">Scale Grade: Intermediate Proficiency (170 - 199 Points)</span>
                 </div>
             `;
